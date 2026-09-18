@@ -1,0 +1,11 @@
+# 依赖与构建产物（本项目为零依赖纯静态站点，以下为通用兜底）
+node_modules/
+dist/
+build/
+.cache/
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+*.zip
+.url
