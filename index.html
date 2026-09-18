@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+  <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control">
+  <meta content="no-cache" http-equiv="Pragma">
+  <meta content="0" http-equiv="Expires">
+  <title data-pnid-children="csAqFkgZO7onsVj0qMgQGg">羊了个羊</title>
+  <link href="style.css?v=10" rel="stylesheet">
+</head>
+<body>
+  <div id="game-wrap">
+    <!--pnid:1RlaKF2clMfubjPpqZzQCe--><!-- 音量控件：固定在左上角，点开弹出音量面板 -->
+    <div id="audio-controls">
+      <button aria-label="音量" class="ctl audio" id="vol-btn"></button>
+      <div class="vol-panel hidden" id="vol-panel">
+        <div class="vol-row">
+          <span class="vol-label"><!--pnid:AhYaOsSjT3nLuKtYCU7Vrj-->音乐</span>
+          <input id="music-vol" max="100" min="0" type="range" value="30">
+        </div>
+        <div class="vol-row">
+          <span class="vol-label"><!--pnid:tGYxTqMwBV5iYEtxdL0mNi-->音效</span>
+          <input id="sfx-vol" max="100" min="0" type="range" value="50">
+        </div>
+      </div>
+    </div>
+
+    <div id="scaler-wrap">
+      <div id="scaler">
+      <header>
+        <h1><!--pnid:0e3wflwgMDeV64n6ycXURP-->羊了个羊</h1>
+        <p class="subtitle"><!--pnid:keOMNyOKKv8clp7eBA7h0e-->点掉遮挡的方块，凑齐 3 个相同图标即可消除 · Vibe Coding 小游戏</p>
+      </header>
+
+      <div id="board-card">
+        <div id="board"></div>
+
+        <!--pnid:3x4ZC7FJYOraCpa0zP9mGW--><!-- 开始面板：居中显示游戏难度与开始按钮 -->
+        <div class="panel-overlay" id="start-panel">
+          <div class="sp-box">
+            <h2><!--pnid:muLEPXWaw9O5XpYU8xT0Ag-->羊了个羊</h2>
+            <p class="sp-diff"><!--pnid:hL7Ee0MblXVN6qgsHZmZpu-->游戏难度：<span id="sp-diff-name"><!--pnid:eExEcsrJKUTtPy3yUxaDgX-->简单</span></p>
+            <button class="big-btn" id="sp-start"><!--pnid:WrbjZP1VPv2Eaa3zybVCSz-->开始游戏</button>
+          </div>
+        </div>
+
+        <!--pnid:FwBaJ6QAJ5BpYeJvO1khGz--><!-- 胜负浮层 -->
+        <div class="hidden" id="overlay">
+          <div class="ov-box">
+            <h2 id="ov-title"><!--pnid:ScWMznGqYdFmFZXZvJmwgq-->通关</h2>
+            <p id="ov-text"><!--pnid:dvkcnt27nkYVfqA9uv3O0F-->全部消除成功</p>
+            <button class="big-btn" id="ov-btn"><!--pnid:9APUeFjn00C91kkBvoWXDr-->再玩一次</button>
+            <button class="txt-btn" id="ov-menu"><!--pnid:kVIUa66gnrlsfm46tGvivf-->回到开始</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="tray-card">
+        <div id="tray"></div>
+        <div id="remain"><!--pnid:SXpRQZTlBRBirHs8bdqkxM-->剩余 0</div>
+      </div>
+
+      <div id="controls">
+        <button class="ctl" id="undo-btn"><!--pnid:RhSfn0uTDBc1uYDxVl1xis-->撤销 <span id="undo-n"><!--pnid:jBKyEOqb4vdmI9isi7VoB5-->3</span></button>
+        <button class="ctl" id="shuffle-btn"><!--pnid:2BP4AYV5O4Zlzkn0pXrw8L-->洗牌 <span id="shuffle-n"><!--pnid:QpsM38zjjN8k4aRhA2Mkwk-->3</span></button>
+        <button class="ctl" id="restart-btn"><!--pnid:wclHEam9Ftown6QnYHr7XX-->重开</button>
+      </div>
+
+      <p class="tip"><!--pnid:4UwBGnvg0oKpLoy6QMYwAq-->提示：被上层压住的方块会变暗、暂时点不动；道具各有限次。</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js?v=10"></script>
+</body>
+</html>
