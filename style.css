@@ -1,0 +1,237 @@
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --board: 400px;   /* 棋盘逻辑尺寸（JS 会按屏幕宽度缩放整体） */
+}
+
+html, body {
+  background: linear-gradient(160deg, #a8e6cf 0%, #dcedc1 50%, #ffd3b6 100%);
+  font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+  color: #3a3a4a;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  overflow-x: hidden;   /* 防止任何情况下的横向滚动 */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#game-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0 28px;
+}
+
+/* 外层占位：宽度跟随视口；不裁切，避免任何情况下点不到按钮 */
+#scaler-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: visible;
+}
+
+/* 内容基准宽 400，缩放时整体等比缩小，内部坐标无需改动 */
+#scaler {
+  width: 400px;
+  flex: 0 0 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+header { text-align: center; }
+h1 { font-size: 30px; letter-spacing: 1px; }
+.subtitle { font-size: 12px; color: #6a6a7a; margin-top: 4px; line-height: 1.5; }
+
+#board-card {
+  position: relative;
+  width: var(--board);
+  height: var(--board);
+  background: rgba(255, 255, 255, 0.55);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+#board { position: relative; width: 100%; height: 100%; }
+
+/* 方块（放大版，更好按） */
+.tile {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #ffffff, #f3f3f7);
+  border: 2px solid #e3e3ec;
+  border-radius: 12px;
+  box-shadow: 0 4px 0 #cfcfdd, 0 6px 8px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: transform 0.08s ease, filter 0.15s ease, opacity 0.2s ease;
+}
+.tile:active { transform: scale(0.92); }
+.tile.covered {
+  filter: brightness(0.6) saturate(0.8);
+  cursor: default;
+}
+.tile.taken { opacity: 0; pointer-events: none; transform: scale(0.4); }
+.tile svg, .slot svg { width: 40px; height: 40px; display: block; }
+
+/* 胜负浮层 */
+#overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(3px);
+  z-index: 999;
+}
+#overlay.hidden { display: none; }
+.ov-box { text-align: center; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.ov-box h2 { font-size: 30px; }
+.ov-box p { color: #6a6a7a; }
+.txt-btn {
+  background: none; border: none; color: #6a6a7a; font-size: 14px;
+  text-decoration: underline; cursor: pointer; padding: 4px;
+}
+
+.big-btn {
+  padding: 12px 34px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(255, 154, 158, 0.45);
+}
+.big-btn:active { transform: scale(0.95); }
+
+/* 托盘 */
+#tray-card {
+  width: var(--board);
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+}
+#tray { display: flex; gap: 6px; flex-wrap: nowrap; justify-content: center; }
+.slot {
+  width: 44px;
+  height: 44px;
+  flex: 0 1 44px;
+  min-width: 0;
+  border: 2px dashed #c9c9d6;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.5);
+}
+.slot svg { width: 34px; height: 34px; }
+.slot.filled { border-style: solid; border-color: #ffd166; background: #fff; }
+#remain { font-size: 13px; color: #6a6a7a; font-weight: 600; }
+
+/* 控制按钮 */
+#controls, #audio-controls { display: flex; gap: 10px; }
+.ctl {
+  padding: 9px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a4a5a;
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.ctl:active { transform: scale(0.95); }
+.ctl:disabled { opacity: 0.4; cursor: default; }
+.ctl.audio { background: rgba(255, 255, 255, 0.7); display: inline-flex; align-items: center; justify-content: center; }
+.ctl.audio.off { color: #b06060; opacity: 0.6; }
+
+/* 音量图标 + 弹出音量面板 */
+#audio-controls { position: absolute; top: 12px; left: 12px; z-index: 1000; }
+.vol-panel {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 8px);
+  width: 184px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.97);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 200;
+}
+.vol-panel.hidden { display: none; }
+.vol-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #4a4a5a; font-weight: 600; }
+.vol-label { width: 30px; flex: 0 0 30px; }
+.vol-row input[type="range"] { flex: 1; accent-color: #ff9f1c; height: 22px; }
+
+/* 开始面板（居中显示难度与开始按钮） */
+#start-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(3px);
+  z-index: 998;
+}
+#start-panel.hidden { display: none; }
+.sp-box { text-align: center; display: flex; flex-direction: column; gap: 14px; align-items: center; }
+.sp-box h2 { font-size: 30px; }
+.sp-diff { font-size: 16px; font-weight: 700; color: #3a3a4a; }
+.sp-diff span { color: #ff8c1a; }
+
+.tip { font-size: 11px; color: #7a7a8a; text-align: center; }
+
+/* 难度提示：游戏界面顶部的横条 */
+#level-banner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+#level-banner.hidden { display: none; }
+.banner-label { font-size: 16px; font-weight: 700; color: #3a3a4a; }
+.banner-label span { color: #ff8c1a; }
+.lvl-btn {
+  padding: 12px 22px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #3a3a4a;
+  background: linear-gradient(135deg, #ffd166, #ff9f1c);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(255, 159, 28, 0.35);
+  white-space: nowrap;
+}
+.lvl-btn:active { transform: scale(0.97); }
